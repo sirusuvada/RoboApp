@@ -23,7 +23,10 @@ async def main(command):
     await send_command(command)
 
 def run_asyncio_task(command):
-    asyncio.run(main(command))
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(main(command))
+    loop.close()
 
 if st.button('Glow your LED'):
     run_asyncio_task(1)
