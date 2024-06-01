@@ -1,2 +1,2 @@
-streamlit==1.32.2
-bleak==0.22.1
+streamlit
+bleak
