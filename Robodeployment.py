@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
 import streamlit as st
 import asyncio
 from bleak import BleakClient
@@ -22,17 +19,10 @@ async def send_command(command):
         else:
             st.write("Failed to connect to the device")
 
-
-
-def run_async_task(task, *args):
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(task(*args))
-
 if st.button('Glow your LED'):
-    
-    run_async_task(send_command, 1)
+    asyncio.run(send_command(1))
     st.write('Your LED glows')
-if st.button('Turn of your Led'):
-    run_async_task(send_command,0)
+
+if st.button('Turn off your LED'):
+    asyncio.run(send_command(0))
     st.write('Your LED turns off')
