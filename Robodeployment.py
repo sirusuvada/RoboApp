@@ -1,38 +1,37 @@
-#!/usr/bin/env python
-# coding: utf-8
-
 import streamlit as st
-import asyncio
-from bleak import BleakClient
+from bleak import BleakScanner, BleakClient
 
-# UUIDs for the BLE service and characteristics
-SERVICE_UUID = "6E400001-B5A3-F393-E0A9-E50E24DCCA9E"
-CHARACTERISTIC_UUID_RX = "6E400002-B5A3-F393-E0A9-E50E24DCCA9E"
+# Streamlit UI
+st.title("BLE Device Interaction")
 
-# Replace this with your ESP32's MAC address
-DEVICE_ADDRESS = "AE3E8C07-584F-76DE-5522-F8ABCAFC0030"
+# Scan for nearby BLE devices
+st.write("Scanning for nearby BLE devices...")
+devices = BleakScanner.discover()
 
-async def send_command(command):
-    async with BleakClient(DEVICE_ADDRESS) as client:
-        if client.is_connected:
-            if command == 1:
-                await client.write_gatt_char(CHARACTERISTIC_UUID_RX, b"1", response=True)
-            elif command == 0:
-                await client.write_gatt_char(CHARACTERISTIC_UUID_RX, b"0", response=True)
-        else:
-            st.write("Failed to connect to the device")
+# Display list of discovered devices
+device_names = [device.name for device in devices]
+selected_device = st.selectbox("Select a device:", device_names)
 
+# Connect to selected device
+client = BleakClient(selected_device)
 
+if st.button("Connect"):
+    st.write(f"Connecting to {selected_device}...")
+    connected = await client.connect()
+    if connected:
+        st.write("Connected to device.")
 
-def run_async_task(task, *args):
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(task(*args))
+        # Example: Read data from a characteristic
+        data = await client.read_gatt_char("0000XXXX-0000-1000-8000-00805f9b34fb")
+        st.write("Data:", data)
 
-if st.button('Glow your LED'):
-    
-    run_async_task(send_command, 1)
-    st.write('Your LED glows')
-if st.button('Turn of your Led'):
-    run_async_task(send_command,0)
-    st.write('Your LED turns off')
+        # Example: Write data to a characteristic
+        # await client.write_gatt_char("0000XXXX-0000-1000-8000-00805f9b34fb", b"Hello")
+
+    else:
+        st.write("Failed to connect to device.")
+
+# Disconnect from device when finished
+if st.button("Disconnect"):
+    await client.disconnect()
+    st.write("Disconnected from device.")
