@@ -12,10 +12,11 @@ devices = BleakScanner.discover()
 device_names = [device.name for device in devices]
 selected_device = st.selectbox("Select a device:", device_names)
 
-# Connect to selected device
-client = BleakClient(selected_device)
+# Define an asynchronous function to handle BLE interactions
+async def ble_interaction(selected_device):
+    client = BleakClient(selected_device)
 
-if st.button("Connect"):
+    # Connect to selected device
     st.write(f"Connecting to {selected_device}...")
     connected = await client.connect()
     if connected:
@@ -31,7 +32,12 @@ if st.button("Connect"):
     else:
         st.write("Failed to connect to device.")
 
-# Disconnect from device when finished
-if st.button("Disconnect"):
+    # Disconnect from device when finished
     await client.disconnect()
     st.write("Disconnected from device.")
+
+# Button to initiate BLE interaction
+if st.button("Connect"):
+    # Call the asynchronous function using asyncio
+    import asyncio
+    asyncio.run(ble_interaction(selected_device))
