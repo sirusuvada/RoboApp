@@ -22,10 +22,13 @@ async def send_command(command):
 async def main(command):
     await send_command(command)
 
+def run_asyncio_task(command):
+    asyncio.run(main(command))
+
 if st.button('Glow your LED'):
-    asyncio.run(main(1))
+    run_asyncio_task(1)
     st.write('Your LED glows')
 
 if st.button('Turn off your LED'):
-    asyncio.run(main(0))
+    run_asyncio_task(0)
     st.write('Your LED turns off')
