@@ -3,5 +3,5 @@ bleak
 asyncio
 pygatt
 pexpect
-cv2
+
 
