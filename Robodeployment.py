@@ -1,8 +1,7 @@
 import streamlit as st
 import asyncio
 from bleak import BleakClient
-import cv2
-from IPython.display import display, Image
+
 
 # UUIDs for the BLE service and characteristics
 SERVICE_UUID = "6E400001-B5A3-F393-E0A9-E50E24DCCA9E"
