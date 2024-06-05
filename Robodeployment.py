@@ -111,7 +111,7 @@ async def automate_with_face():
 
 if st.button('Move forward'):
     # run_asyncio_task(1)
-    send_command(1)
+    await send_command(1)
     st.write('Your robo move forward')
 
 if st.button('Move backward'):
