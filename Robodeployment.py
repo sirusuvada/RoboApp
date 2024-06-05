@@ -1,8 +1,8 @@
 import streamlit as st
 import asyncio
-from bleak import BleakClient
 import cv2
-
+from PIL import Image
+from bleak import BleakClient
 
 # UUIDs for the BLE service and characteristics
 SERVICE_UUID = "6E400001-B5A3-F393-E0A9-E50E24DCCA9E"
@@ -23,12 +23,6 @@ async def send_command(command):
 
 async def main(command):
     await send_command(command)
-
-def run_asyncio_task(command):
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(main(command))
-    loop.close()
 
 async def automate_with_face():
     # Load the pre-trained face cascade
@@ -85,7 +79,7 @@ async def automate_with_face():
 
         # Convert frame to JPEG format
         _, jpeg = cv2.imencode('.jpg', frame)
-        display(Image(data=jpeg.tobytes()))
+        st.image(Image.fromarray(cv2.cvtColor(cv2.flip(frame, 1), cv2.COLOR_BGR2RGB)), use_column_width=True)
 
     # Open webcam
     cap = cv2.VideoCapture(0)
@@ -110,30 +104,27 @@ async def automate_with_face():
     cap.release()
 
 if st.button('Move forward'):
-    # run_asyncio_task(1)
-    await send_command(1)
+    asyncio.run(send_command(1))
     st.write('Your robo move forward')
 
 if st.button('Move backward'):
-    run_asyncio_task(4)
+    asyncio.run(send_command(4))
     st.write('Your robo move backward')
     
 if st.button('Move left'):
-    run_asyncio_task(2)
+    asyncio.run(send_command(2))
     st.write('Your robo move left')
     
 if st.button('Move right'):
-    run_asyncio_task(3)
+    asyncio.run(send_command(3))
     st.write('Your robo move right')
     
 if st.button('Stop'):
-    run_asyncio_task(-1)
+    asyncio.run(send_command(-1))
     st.write('Your robo stopped')
 
 if st.button('Automate with face for forward and backward'):
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(automate_with_face())
-    loop.close()
+    asyncio.run(automate_with_face())
+    
 if st.button('stop the face algorithm'):
     cv2.VideoCapture(0).release()
