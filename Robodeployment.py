@@ -1,6 +1,7 @@
 import streamlit as st
 import asyncio
 from bleak import BleakClient
+import cv2
 
 
 # UUIDs for the BLE service and characteristics
@@ -110,7 +111,7 @@ async def automate_with_face():
 
 if st.button('Move forward'):
     # run_asyncio_task(1)
-    send_command(1)
+    run_asyncio_task(1)
     st.write('Your robo move forward')
 
 if st.button('Move backward'):
