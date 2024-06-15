@@ -1,8 +1,4 @@
 streamlit
 bleak
-asyncio
-pygatt
-pexpect
-opencv-python-headless
 
 
